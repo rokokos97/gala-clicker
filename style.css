@@ -80,6 +80,8 @@ html, body {
   margin-top: 20px;
   position: relative; 
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
 }
 .circle__img {
@@ -91,6 +93,21 @@ html, body {
   --tiltX: 0deg;
   --tiltY: 0deg;
   transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+}
+.progress-bar {
+  width: 200px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #feeb8b, #fcbd02);
+  transition: width 0.2s ease;
 }
 .plusone {
   position: absolute ;

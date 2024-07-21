@@ -5,6 +5,9 @@ const $score = document.querySelector("#score")
 const $dailyScore = document.querySelector("#daily-score")
 const $monthlyScore = document.querySelector("#monthly-score")
 const $totalScore = document.querySelector("#total-score")
+const $progressFill = document.querySelector("#progress-fill")
+
+const LEVELS = [10000, 100000, 5000000, 10000000] 
 
 function start (score){
     checkAndResetDailyScore()
@@ -13,6 +16,7 @@ function start (score){
     setDailyScore(getDailyScore())
     setMonthlyScore(getMonthlyScore())
     setTotalScore(getTotalScore())
+    updateProgressBar()
     setImage()  
 }
 
@@ -86,6 +90,15 @@ function addOne (){
      setImage()
 }
 
+function updateProgressBar() {
+    const score = getScore()
+    const nextLevel = LEVELS.find(level => score < level) || LEVELS[LEVELS.length - 1]
+    const prevLevel = LEVELS.slice().reverse().find(level => score >= level) || 0
+    const progress = (score - prevLevel) / (nextLevel - prevLevel) * 100
+    
+    $progressFill.style.width = `${progress}%`
+
+}
 
 $circle.addEventListener('click', (event) => {
     const rect = $circle.getBoundingClientRect()

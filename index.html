@@ -9,8 +9,24 @@
   <body>
     <article class="game">
       <section class="header" >
-        <img class="header__img" src="./assets/keyboard.png" alt="keyboard">
-        <h2 id="score" class="header__score"></h2>
+        <div class="header__score-sections">
+          <div class="header__score-section">
+            <img class="score__img" src="./assets/dailyScore.png" alt="score image">
+            <h2 id="daily-score" class="score__text"></h2>
+          </div>
+          <div class="header__score-section">
+            <img class="score__img" src="./assets/monthlyScore.png" alt="score image">
+            <h2 id="monthly-score" class="score__text"></h2>
+          </div>
+          <div class="header__score-section">
+            <img class="score__img" src="./assets/totalScore.png" alt="score image">
+            <h2 id="total-score" class="score__text"></h2>
+          </div>
+        </div>
+        <div class="header__livescore-section">
+          <img class="header__img" src="./assets/keyboard.png" alt="keyboard">
+          <h2 id="score" class="header__score"></h2>
+        </div>
       </section>
       <section class="circle">
         <img id="circle" class="circle__img"  src="./assets/galaJunior.png" alt="galaYoung">

@@ -1,24 +1,68 @@
 import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+const $circle = document.querySelector("#circle")
+const $score = document.querySelector("#score")
 
-setupCounter(document.querySelector('#counter'))
+function start (score){
+    setScore(getScore(score))
+    setImage()  
+}
+
+function setScore (score){
+    localStorage.setItem('score', score)
+    $score.textContent = score
+}
+function setImage (){
+    if ( getScore() > 50 ) {
+        $circle.setAttribute('src', './assets/galaMiddle.png')
+    }  
+    if (getScore() > 100 ) {
+        $circle.setAttribute('src', './assets/galaSenior.png' )
+    }
+
+}
+function getScore (){
+    return Number( 
+        localStorage && localStorage.getItem('score')) || 0
+}
+function addOne (){
+     setScore(getScore()+1)
+     setImage()
+}
+
+
+$circle.addEventListener('click', (event) => {
+    const rect = $circle.getBoundingClientRect()
+
+    const offsetX = event.clientX - rect.left - rect.width / 2
+    const offsetY = event.clientY - rect.top - rect.height / 2
+
+    const DEG = 40
+
+    const tiltX = (offsetY / rect.height) * DEG
+    const tiltY = (offsetX / rect.width) * -DEG
+
+    $circle.style.setProperty('--tiltX', `${tiltX}deg`)
+    $circle.style.setProperty('--tiltY', `${tiltY}deg`)
+
+     setTimeout (()=> {
+        $circle.style.setProperty('--tiltX', `0deg`)
+        $circle.style.setProperty('--tiltY', `0deg`)
+     }, 200)
+
+     const plusOne = document.createElement('div')
+     plusOne.classList.add('plusone')
+     plusOne.textContent = '+1'
+     plusOne.style.left = `${event.clientX - rect.left}px`
+     plusOne.style.top = `${event.clientY - rect.top}px`
+     
+     $circle.parentElement.appendChild(plusOne)
+
+     addOne()
+
+     setTimeout(() => {
+        plusOne.remove()
+     },2000)
+} ) 
+
+start()

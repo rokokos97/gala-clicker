@@ -6,8 +6,9 @@ const $dailyScore = document.querySelector("#daily-score")
 const $monthlyScore = document.querySelector("#monthly-score")
 const $totalScore = document.querySelector("#total-score")
 const $progressFill = document.querySelector("#progress-fill")
+let xlevel = 1;
 
-const LEVELS = [10000, 100000, 5000000, 10000000] 
+const LEVELS = [10000, 100000, 1000000, 10000000, 100000000, 1000000000] 
 
 function start (score){
     checkAndResetDailyScore()
@@ -39,15 +40,30 @@ function setTotalScore(score) {
     $totalScore.textContent = score
 }
 
-
-function setImage (){
-    if ( getScore() > 1000 ) {
+function setImage() {
+    const score = getScore()
+    if (score >= LEVELS[5]) {
+        $circle.setAttribute('src', './assets/galaGoogle.png')
+        xlevel = 50
+    } else if (score >= LEVELS[4]) {
+        $circle.setAttribute('src', './assets/galaTeamLead.png')
+        xlevel = 25
+    } else if (score >= LEVELS[3]) {
+        $circle.setAttribute('src', './assets/galaSenior.png')
+        xlevel = 15
+    } else if (score >= LEVELS[2]) {
         $circle.setAttribute('src', './assets/galaMiddle.png')
-    }  
-    if (getScore() > 10000 ) {
-        $circle.setAttribute('src', './assets/galaSenior.png' )
+        xlevel = 10
+    } else if (score >= LEVELS[1]) {
+        $circle.setAttribute('src', './assets/galaJunior.png')
+        xlevel = 5
+    } else if (score >= LEVELS[0]) {
+        $circle.setAttribute('src', './assets/galaTrainee.png')
+        xlevel = 1
+    } else {
+        $circle.setAttribute('src', './assets/galaStudent.png')
+        xlevel = 1
     }
-
 }
 function getScore (){
     return Number( 
@@ -65,29 +81,35 @@ function getTotalScore() {
     return Number(localStorage.getItem('totalScore')) || 0
 }
 function checkAndResetDailyScore() {
-    const lastUpdated = localStorage.getItem('lastUpdated')
+    const lastUpdatedDaily = localStorage.getItem('lastUpdated')
     const today = new Date().toISOString().split('T')[0]
 
-    if (lastUpdated !== today) {
+    if (lastUpdatedDaily !== today) {
         localStorage.setItem('dailyScore', 0)
         localStorage.setItem('lastUpdated', today)
     }
 }
 function checkAndResetMonthlyScore() {
-    const lastUpdated = localStorage.getItem('lastUpdatedMonthly')
+    const lastUpdatedMonthly = localStorage.getItem('lastUpdatedMonthly')
     const currentMonth = new Date().toISOString().slice(0, 7)
 
-    if (lastUpdated !== currentMonth) {
+    if (lastUpdatedMonthly !== currentMonth) {
         localStorage.setItem('monthlyScore', 0)
         localStorage.setItem('lastUpdatedMonthly', currentMonth)
     }
 }
 function addOne (){
-     setScore(getScore()+1)
-     setDailyScore(getDailyScore()+1)
-     setMonthlyScore(getMonthlyScore()+1)
-     setTotalScore(getTotalScore()+1)
-     setImage()
+    const newScore = getScore() + xlevel
+    const newDailyScore = getDailyScore() + xlevel
+    const newMonthlyScore = getMonthlyScore() + xlevel
+    const newTotalScore = getTotalScore() + xlevel
+
+    setScore(newScore)
+    setDailyScore(newDailyScore)
+    setMonthlyScore(newMonthlyScore)
+    setTotalScore(newTotalScore)
+    updateProgressBar()
+    setImage()
 }
 
 function updateProgressBar() {
@@ -97,7 +119,6 @@ function updateProgressBar() {
     const progress = (score - prevLevel) / (nextLevel - prevLevel) * 100
     
     $progressFill.style.width = `${progress}%`
-
 }
 
 $circle.addEventListener('click', (event) => {
@@ -121,7 +142,7 @@ $circle.addEventListener('click', (event) => {
 
      const plusOne = document.createElement('div')
      plusOne.classList.add('plusone')
-     plusOne.textContent = '+1'
+     plusOne.textContent = `+${xlevel}`
      plusOne.style.left = `${event.clientX - rect.left}px`
      plusOne.style.top = `${event.clientY - rect.top}px`
      

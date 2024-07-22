@@ -7,15 +7,19 @@ const $monthlyScore = document.querySelector("#monthly-score")
 const $totalScore = document.querySelector("#total-score")
 const $progressFill = document.querySelector("#progress-fill")
 const $clicksLeft = document.querySelector("#clicks-left")
+const $availableLines = document.querySelector("#available-lines")
+
+let availableLines = 100
+let recoveryInterval = null
 
 const LEVELS = [
-    { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: './assets/galaStudent.webp', xlevel: 1 },
-    { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: './assets/galaTrainee.webp', xlevel: 1 },
-    { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: './assets/galaJunior.webp', xlevel: 5 },
-    { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: './assets/galaMiddle.webp', xlevel: 10 },
-    { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: './assets/galaSenior.webp', xlevel: 15 },
-    { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: './assets/galaTeamLead.webp', xlevel: 25 },
-    { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: './assets/galaGoogle.webp', xlevel: 50 }
+    { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: './assets/galaStudent.webp', xlevel: 1, maxLines: 100 },
+    { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: './assets/galaTrainee.webp', xlevel: 1, maxLines: 100 },
+    { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: './assets/galaJunior.webp', xlevel: 5, maxLines: 200 },
+    { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: './assets/galaMiddle.webp', xlevel: 10, maxLines: 400 },
+    { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: './assets/galaSenior.webp', xlevel: 15, maxLines: 600 },
+    { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: './assets/galaTeamLead.webp', xlevel: 25, maxLines: 800 },
+    { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: './assets/galaGoogle.webp', xlevel: 50, maxLines: 999 }
 ]
 
 function start (score){
@@ -30,6 +34,8 @@ function start (score){
     updateProgressBar()
     updateImageAndLevel()
     updateClicksLeft()
+
+    updateAvailableLines()
 }
 
 function setScore (score){
@@ -86,12 +92,15 @@ function checkAndResetMonthlyScore() {
 }
 
 function addOne (){
+    if (availableLines > 0) {
     const score = getScore()
     const level = getCurrentLevel(score)
     const newScore = getScore() + level.xlevel
     const newDailyScore = getDailyScore() +level.xlevel
     const newMonthlyScore = getMonthlyScore() + level.xlevel
     const newTotalScore = getTotalScore() + level.xlevel
+
+    availableLines -= 1
 
     setScore(newScore)
     setDailyScore(newDailyScore)
@@ -101,6 +110,22 @@ function addOne (){
     updateProgressBar()
     updateImageAndLevel()
     updateClicksLeft()
+    updateAvailableLines()
+
+    clearInterval(recoveryInterval)
+    recoveryInterval = setInterval(recoverLines, 1000)
+    } else {
+        alert('No more lines available')
+    }
+}
+
+function updateProgressBar() {
+    const score = getScore()
+    const nextLevel = getNextLevel(score)
+    const prevLevel = getCurrentLevel(score)
+    const progress = (score - prevLevel.numberOfCodeLines) / (nextLevel.numberOfCodeLines - prevLevel.numberOfCodeLines) * 100
+    
+    $progressFill.style.width = `${progress}%`
 }
 
 function updateClicksLeft() {
@@ -117,21 +142,25 @@ function updateImageAndLevel() {
     $circle.setAttribute('src', level.imgUrl)
 }
 
+function updateAvailableLines() {
+    $availableLines.textContent = `Available lines: ${availableLines}`
+}
 
+function recoverLines() {
+    const score = getScore()
+    const level = getCurrentLevel(score)
+    if (availableLines < level.maxLines) {
+        availableLines += 1
+        updateAvailableLines()
+    } else {
+        clearInterval(recoveryInterval)
+    }
+}
 function getCurrentLevel(score) {
     return LEVELS.slice().reverse().find(level => score >= level.numberOfCodeLines) || LEVELS[0]
 }
 function getNextLevel(score) {
     return LEVELS.find(level => score < level.numberOfCodeLines) || LEVELS[LEVELS.length - 1]
-}
-
-function updateProgressBar() {
-    const score = getScore()
-    const nextLevel = getNextLevel(score)
-    const prevLevel = getCurrentLevel(score)
-    const progress = (score - prevLevel.numberOfCodeLines) / (nextLevel.numberOfCodeLines - prevLevel.numberOfCodeLines) * 100
-    
-    $progressFill.style.width = `${progress}%`
 }
 
 $circle.addEventListener('click', (event) => {

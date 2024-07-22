@@ -1,4 +1,11 @@
 import './style.css'
+import galaStudent from '/galaStudent.webp'
+import galaTrainee from '/galaTrainee.webp'
+import galaJunior from '/galaJunior.webp'
+import galaMiddle from '/galaMiddle.webp'
+import galaSenior from '/galaSenior.webp'
+import galaTeamLead from '/galaTeamLead.webp'
+import galaGoogle from '/galaGoogle.webp'
 
 const $circle = document.querySelector("#circle")
 const $score = document.querySelector("#score")
@@ -13,13 +20,13 @@ let availableLines = 100
 let recoveryInterval = null
 
 const LEVELS = [
-    { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: 'galaStudent.webp', xlevel: 1, maxLines: 100 },
-    { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: 'galaTrainee.webp', xlevel: 1, maxLines: 100 },
-    { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: 'galaJunior.webp', xlevel: 5, maxLines: 200 },
-    { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: 'galaMiddle.webp', xlevel: 10, maxLines: 400 },
-    { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: 'galaSenior.webp', xlevel: 15, maxLines: 600 },
-    { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: 'galaTeamLead.webp', xlevel: 25, maxLines: 800 },
-    { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: 'galaGoogle.webp', xlevel: 50, maxLines: 999 }
+    { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: galaStudent, xlevel: 1, maxLines: 100 },
+    { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: galaTrainee, xlevel: 1, maxLines: 100 },
+    { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: galaJunior, xlevel: 5, maxLines: 200 },
+    { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: galaMiddle, xlevel: 10, maxLines: 400 },
+    { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: galaSenior, xlevel: 15, maxLines: 600 },
+    { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: galaTeamLead, xlevel: 25, maxLines: 800 },
+    { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: galaGoogle, xlevel: 50, maxLines: 999 }
 ]
 
 function start (score){
@@ -139,7 +146,7 @@ function updateClicksLeft() {
 function updateImageAndLevel() {
     const score = getScore()
     const level = getCurrentLevel(score)
-    $circle.setAttribute('src', `public/${level.imgUrl}`)
+    $circle.setAttribute('src', `${level.imgUrl}`)
 }
 
 function updateAvailableLines() {

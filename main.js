@@ -6,19 +6,30 @@ const $dailyScore = document.querySelector("#daily-score")
 const $monthlyScore = document.querySelector("#monthly-score")
 const $totalScore = document.querySelector("#total-score")
 const $progressFill = document.querySelector("#progress-fill")
-let xlevel = 1;
+const $clicksLeft = document.querySelector("#clicks-left")
 
-const LEVELS = [10000, 100000, 1000000, 10000000, 100000000, 1000000000] 
+const LEVELS = [
+    { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: './assets/galaStudent.webp', xlevel: 1 },
+    { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: './assets/galaTrainee.webp', xlevel: 1 },
+    { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: './assets/galaJunior.webp', xlevel: 5 },
+    { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: './assets/galaMiddle.webp', xlevel: 10 },
+    { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: './assets/galaSenior.webp', xlevel: 15 },
+    { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: './assets/galaTeamLead.webp', xlevel: 25 },
+    { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: './assets/galaGoogle.webp', xlevel: 50 }
+]
 
 function start (score){
     checkAndResetDailyScore()
     checkAndResetMonthlyScore()
+
     setScore(getScore())
     setDailyScore(getDailyScore())
     setMonthlyScore(getMonthlyScore())
     setTotalScore(getTotalScore())
+
     updateProgressBar()
-    setImage()  
+    updateImageAndLevel()
+    updateClicksLeft()
 }
 
 function setScore (score){
@@ -40,31 +51,6 @@ function setTotalScore(score) {
     $totalScore.textContent = score
 }
 
-function setImage() {
-    const score = getScore()
-    if (score >= LEVELS[5]) {
-        $circle.setAttribute('src', './assets/galaGoogle.webp')
-        xlevel = 50
-    } else if (score >= LEVELS[4]) {
-        $circle.setAttribute('src', './assets/galaTeamLead.webp')
-        xlevel = 25
-    } else if (score >= LEVELS[3]) {
-        $circle.setAttribute('src', './assets/galaSenior.webp')
-        xlevel = 15
-    } else if (score >= LEVELS[2]) {
-        $circle.setAttribute('src', './assets/galaMiddle.webp')
-        xlevel = 10
-    } else if (score >= LEVELS[1]) {
-        $circle.setAttribute('src', './assets/galaJunior.webp')
-        xlevel = 5
-    } else if (score >= LEVELS[0]) {
-        $circle.setAttribute('src', './assets/galaTrainee.webp')
-        xlevel = 1
-    } else {
-        $circle.setAttribute('src', './assets/galaStudent.webp')
-        xlevel = 1
-    }
-}
 function getScore (){
     return Number( 
         localStorage && localStorage.getItem('score')) || 0
@@ -98,25 +84,52 @@ function checkAndResetMonthlyScore() {
         localStorage.setItem('lastUpdatedMonthly', currentMonth)
     }
 }
+
 function addOne (){
-    const newScore = getScore() + xlevel
-    const newDailyScore = getDailyScore() + xlevel
-    const newMonthlyScore = getMonthlyScore() + xlevel
-    const newTotalScore = getTotalScore() + xlevel
+    const score = getScore()
+    const level = getCurrentLevel(score)
+    const newScore = getScore() + level.xlevel
+    const newDailyScore = getDailyScore() +level.xlevel
+    const newMonthlyScore = getMonthlyScore() + level.xlevel
+    const newTotalScore = getTotalScore() + level.xlevel
 
     setScore(newScore)
     setDailyScore(newDailyScore)
     setMonthlyScore(newMonthlyScore)
     setTotalScore(newTotalScore)
+
     updateProgressBar()
-    setImage()
+    updateImageAndLevel()
+    updateClicksLeft()
+}
+
+function updateClicksLeft() {
+    const score = getScore()
+    const nextLevel = getNextLevel(score)
+    const level = getCurrentLevel(score)
+    const clicksLeft = Math.ceil((nextLevel.numberOfCodeLines - score) / level.xlevel)
+    $clicksLeft.textContent = `Lines left level ${nextLevel.name}: ${clicksLeft}`
+}
+
+function updateImageAndLevel() {
+    const score = getScore()
+    const level = getCurrentLevel(score)
+    $circle.setAttribute('src', level.imgUrl)
+}
+
+
+function getCurrentLevel(score) {
+    return LEVELS.slice().reverse().find(level => score >= level.numberOfCodeLines) || LEVELS[0]
+}
+function getNextLevel(score) {
+    return LEVELS.find(level => score < level.numberOfCodeLines) || LEVELS[LEVELS.length - 1]
 }
 
 function updateProgressBar() {
     const score = getScore()
-    const nextLevel = LEVELS.find(level => score < level) || LEVELS[LEVELS.length - 1]
-    const prevLevel = LEVELS.slice().reverse().find(level => score >= level) || 0
-    const progress = (score - prevLevel) / (nextLevel - prevLevel) * 100
+    const nextLevel = getNextLevel(score)
+    const prevLevel = getCurrentLevel(score)
+    const progress = (score - prevLevel.numberOfCodeLines) / (nextLevel.numberOfCodeLines - prevLevel.numberOfCodeLines) * 100
     
     $progressFill.style.width = `${progress}%`
 }
@@ -142,7 +155,7 @@ $circle.addEventListener('click', (event) => {
 
      const plusOne = document.createElement('div')
      plusOne.classList.add('plusone')
-     plusOne.textContent = `+${xlevel}`
+     plusOne.textContent = `+${getCurrentLevel(getScore()).xlevel}`
      plusOne.style.left = `${event.clientX - rect.left}px`
      plusOne.style.top = `${event.clientY - rect.top}px`
      

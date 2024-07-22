@@ -96,7 +96,7 @@ html, body {
 }
 .progress-bar {
   width: 200px;
-  height: 20px;
+  height: 10px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
@@ -124,13 +124,22 @@ html, body {
   animation: move-up 3s forwards;
 }
 
+.clicks-left {
+  color: #F7B84B;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 10px;
+  text-shadow: 0px 0px 5px rgba(247, 184, 75, 1);
+  text-transform: uppercase;
+}
+
 @keyframes move-up {
   0% {
     opacity: 1;
     transform: translateY(0); 
   }
   100% {
-    opacity: 0.3;
+    opacity: 0;
     transform: translateY(-80px); 
   }
 }

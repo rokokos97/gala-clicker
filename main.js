@@ -43,25 +43,25 @@ function setTotalScore(score) {
 function setImage() {
     const score = getScore()
     if (score >= LEVELS[5]) {
-        $circle.setAttribute('src', './assets/galaGoogle.png')
+        $circle.setAttribute('src', './assets/galaGoogle.webp')
         xlevel = 50
     } else if (score >= LEVELS[4]) {
-        $circle.setAttribute('src', './assets/galaTeamLead.png')
+        $circle.setAttribute('src', './assets/galaTeamLead.webp')
         xlevel = 25
     } else if (score >= LEVELS[3]) {
-        $circle.setAttribute('src', './assets/galaSenior.png')
+        $circle.setAttribute('src', './assets/galaSenior.webp')
         xlevel = 15
     } else if (score >= LEVELS[2]) {
-        $circle.setAttribute('src', './assets/galaMiddle.png')
+        $circle.setAttribute('src', './assets/galaMiddle.webp')
         xlevel = 10
     } else if (score >= LEVELS[1]) {
-        $circle.setAttribute('src', './assets/galaJunior.png')
+        $circle.setAttribute('src', './assets/galaJunior.webp')
         xlevel = 5
     } else if (score >= LEVELS[0]) {
-        $circle.setAttribute('src', './assets/galaTrainee.png')
+        $circle.setAttribute('src', './assets/galaTrainee.webp')
         xlevel = 1
     } else {
-        $circle.setAttribute('src', './assets/galaStudent.png')
+        $circle.setAttribute('src', './assets/galaStudent.webp')
         xlevel = 1
     }
 }

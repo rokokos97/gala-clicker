@@ -143,7 +143,9 @@ function updateImageAndLevel() {
 }
 
 function updateAvailableLines() {
-    $availableLines.textContent = `Available lines: ${availableLines}`
+    const score = getScore()
+    const level = getCurrentLevel(score)
+    $availableLines.textContent = `${availableLines} / ${level.maxLines}`
 }
 
 function recoverLines() {

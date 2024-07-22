@@ -1,15 +1,12 @@
 import { defineConfig } from 'vite'
-import viteStaticCopy from 'vite-plugin-static-copy'
+import {viteStaticCopy} from 'vite-plugin-static-copy'
 
 export default defineConfig({
     base: '/gala-clicker/',
-    plagins: [
-        viteStaticCopy({
-            target: [
-                {src: 'assets/*',
-                    dist:'assets'
-                }
-            ]
-        })
-    ]
+    plagins: [viteStaticCopy({
+        targets: [
+            { src: 'assets', dest: 'dist/assets' },
+            { src: 'index.html', dest: 'dist' },
+        ],
+    })],
 })

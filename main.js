@@ -7,6 +7,12 @@ import galaSenior from '/galaSenior.webp'
 import galaTeamLead from '/galaTeamLead.webp'
 import galaGoogle from '/galaGoogle.webp'
 
+const images = document.querySelectorAll("img");
+  images.forEach(img => {
+    img.addEventListener('contextmenu', e => e.preventDefault());
+    img.setAttribute('draggable', 'false');
+  });
+
 const $circle = document.querySelector("#circle")
 const $score = document.querySelector("#score")
 const $dailyScore = document.querySelector("#daily-score")
@@ -16,7 +22,7 @@ const $progressFill = document.querySelector("#progress-fill")
 const $clicksLeft = document.querySelector("#clicks-left")
 const $availableLines = document.querySelector("#available-lines")
 
-let availableLines = 100
+let availableLines = localStorage.getItem('availableLines') ? Number(localStorage.getItem('availableLines')) : 100;
 let recoveryInterval = null
 
 const LEVELS = [
@@ -43,6 +49,10 @@ function start (score){
     updateClicksLeft()
 
     updateAvailableLines()
+
+    if (availableLines < getCurrentLevel(getScore()).maxLines) {
+        recoveryInterval = setInterval(recoverLines, 1000);
+      }
 }
 
 function setScore (score){
@@ -108,6 +118,7 @@ function addOne (){
     const newTotalScore = getTotalScore() + level.xlevel
 
     availableLines -= 1
+    localStorage.setItem('availableLines', availableLines);
 
     setScore(newScore)
     setDailyScore(newDailyScore)

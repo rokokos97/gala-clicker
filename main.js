@@ -9,7 +9,7 @@ import galaGoogle from '/galaGoogle.webp'
 
 const images = document.querySelectorAll("img");
   images.forEach(img => {
-    img.addEventListener('contextmenu', e => e.preventDefault());
+    img.addEventListener('contextmenu', e => e.preventDefault())
     img.setAttribute('draggable', 'false');
   });
 
@@ -22,8 +22,9 @@ const $progressFill = document.querySelector("#progress-fill")
 const $clicksLeft = document.querySelector("#clicks-left")
 const $availableLines = document.querySelector("#available-lines")
 
-let availableLines = localStorage.getItem('availableLines') ? Number(localStorage.getItem('availableLines')) : 100;
+let availableLines = localStorage.getItem('availableLines') ? Number(localStorage.getItem('availableLines')) : 100
 let recoveryInterval = null
+let delayTimeout = null
 
 const LEVELS = [
     { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: galaStudent, xlevel: 1, maxLines: 100 },
@@ -130,10 +131,15 @@ function addOne (){
     updateClicksLeft()
     updateAvailableLines()
 
-    clearInterval(recoveryInterval)
-    recoveryInterval = setInterval(recoverLines, 1000)
+    clearTimeout(delayTimeout)
+      clearInterval(recoveryInterval)
+
+      delayTimeout = setTimeout(() => {
+        recoveryInterval = setInterval(recoverLines, 1000)
+      }, 10000)
     } else {
-        alert('No more lines available')
+        $circle.classList.add('grayscale')
+        return
     }
 }
 
@@ -172,6 +178,9 @@ function recoverLines() {
     if (availableLines < level.maxLines) {
         availableLines += 1
         updateAvailableLines()
+        if (availableLines > 0) {
+            $circle.classList.remove('grayscale')
+          }
     } else {
         clearInterval(recoveryInterval)
     }

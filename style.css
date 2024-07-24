@@ -130,6 +130,10 @@ html, body {
   --tiltY: 0deg;
   transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
 }
+.circle__img.grayscale {
+  filter: grayscale(100%);
+  pointer-events: none;
+}
 .progress-bar {
   width: 100%;
   height: 10px;

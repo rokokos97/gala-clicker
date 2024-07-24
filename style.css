@@ -1,13 +1,15 @@
 html, body {
+  display: block;
   font-family: "Helvetica Neue";
-  margin: 0;
+  margin-inline: auto;
   height: 100vh;
   padding: 0;
-  width: 100%;
+  max-width: 768px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgb(35, 32, 32);
+  user-select: none;
 }
 .game {
   width: 96%;
@@ -168,7 +170,7 @@ html, body {
   text-transform: uppercase;
   text-align: initial;
   word-spacing: 2px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
 }
 
 @keyframes move-up {

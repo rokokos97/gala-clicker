@@ -7,6 +7,26 @@ import galaSenior from '/galaSenior.webp'
 import galaTeamLead from '/galaTeamLead.webp'
 import galaGoogle from '/galaGoogle.webp'
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const navLinks = document.querySelectorAll("nav ul li a");
+    const sections = document.querySelectorAll(".section");
+  
+    navLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetSection = e.target.getAttribute("data-section");
+  
+        sections.forEach(section => {
+          if (section.id === targetSection) {
+            section.classList.add("active");
+          } else {
+            section.classList.remove("active");
+          }
+        });
+      });
+    });
+
 const images = document.querySelectorAll("img");
   images.forEach(img => {
     img.addEventListener('contextmenu', e => e.preventDefault())
@@ -136,7 +156,7 @@ function addOne (){
 
       delayTimeout = setTimeout(() => {
         recoveryInterval = setInterval(recoverLines, 1000)
-      }, 10000)
+      }, 5000)
     } else {
         $circle.classList.add('grayscale')
         return
@@ -177,6 +197,7 @@ function recoverLines() {
     const level = getCurrentLevel(score)
     if (availableLines < level.maxLines) {
         availableLines += 1
+        localStorage.setItem('availableLines', availableLines);
         updateAvailableLines()
         if (availableLines > 0) {
             $circle.classList.remove('grayscale')
@@ -227,3 +248,4 @@ $circle.addEventListener('click', (event) => {
 } ) 
 
 start()
+})

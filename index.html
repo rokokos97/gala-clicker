@@ -7,18 +7,18 @@
     <title>Gala Clicker</title>
   </head>
   <body>
-    <article class="game">
-      <section class="header" >
-        <div class="header__score-sections">
-          <div class="header__score-section">
+    <main>
+      <section class="head section active" id="game" >
+        <div class="head__score-sections">
+          <div class="head__score-section">
             <img class="score__img" src="/dailyScore.webp" alt="score image">
             <h2 id="daily-score" class="score__text"></h2>
           </div>
-          <div class="header__score-section">
+          <div class="head__score-section">
             <img class="score__img" src="/monthlyScore.webp" alt="score image">
             <h2 id="monthly-score" class="score__text"></h2>
           </div>
-          <div class="header__score-section">
+          <div class="head__score-section">
             <img class="score__img" src="/totalScore.webp" alt="score image">
             <h2 id="total-score" class="score__text"></h2>
           </div>
@@ -27,19 +27,38 @@
           <div id="progress-fill" class="progress-fill"></div>
         </div>
         <p id="clicks-left" class="clicks-left"></p>
-        <div class="header__livescore-section">
-          <img class="header__img" src="/keyboard.webp" alt="keyboard">
-          <h2 id="score" class="header__score"></h2>
+        <div class="head__livescore-section">
+          <img class="head__img" src="/keyboard.webp" alt="keyboard">
+          <h2 id="score" class="head__score"></h2>
+        </div>
+        <div class="circle">
+          <img id="circle" class="circle__img"  src="" width="280" height="280" alt="Gala">
+          <div class="available-lines" >
+            <img class="available-lines__img" src="/battery.webp" alt="battery">
+            <p id="available-lines" class="available-lines__text"></p>
+          </div>
         </div>
       </section>
-      <section class="circle">
-        <img id="circle" class="circle__img"  src="" width="280" height="280" alt="Gala">
-        <div class="available-lines" >
-          <img class="available-lines__img" src="/battery.webp" alt="battery">
-          <p id="available-lines" class="available-lines__text"></p>
+      <section class="section" id="rules">
+        <div class="rules">
+          <h2>game rules</h2>
+          <p>Welcome to Gala Clicker! This is a game where you help your virtual programmer progress and write new lines of code. Your task is to click on the programmer's image to earn points and level up your character.Each click earns you a certain number of lines of code. The number of lines of code per click depends on your current level. The number of lines of code per click depends on your current level. Your clicking ability is limited. You start with a certain number of available clicks, which gradually recover over time. When available clicks run out, the image turns black and white, and you cannot continue clicking until they recover. With each level, your character becomes stronger, and you earn more lines of code per click. Your daily and monthly scores reset, allowing you to compete for new records.
+        </p>
         </div>
       </section>
-    </article>
+      <!-- <section class="user section"></section>
+      <section class="leaderboard section"></section> -->
+    </main>
+    <footer>
+      <nav>
+        <ul>
+          <li><a href="#" data-section="game">Game</a></li>
+          <li><a href="#" data-section="rules">Rules</a></li>
+          <li><a href="#" data-section="user">User</a></li>
+          <li><a href="#" data-section="leaderboard">Leaderboard</a></li>
+        </ul>
+      </nav>
+    </footer>
     <script type="module" src="/main.js" defer></script>
   </body>
 </html>

@@ -3,7 +3,7 @@
             <p>Current Level: ${a.name}</p>
             <p>First Name: ${l}</p>
             <p>Last Name: ${m}</p>
-        `}function H(e){const a=e.sort((l,m)=>m.score-l.score).map(l=>`
+        `}function H(e){console.log("Leaderboard:",e);const a=e.sort((l,m)=>m.score-l.score).map(l=>`
             <div class="leaderboard-item">
                 <p>${l.username}: ${l.score}</p>
             </div>

@@ -1,5 +1,4 @@
 import './style.css'
-import { v4 as uuidv4 } from 'uuid';
 import galaStudent from '/galaStudent.webp'
 import galaTrainee from '/galaTrainee.webp'
 import galaJunior from '/galaJunior.webp'
@@ -89,7 +88,7 @@ function initializeApp() {
         { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: galaTeamLead, xlevel: 25, maxLines: 800 },
         { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: galaGoogle, xlevel: 50, maxLines: 999 }
     ]
-    function start (score){
+    function start (){
         checkAndResetDailyScore()
         checkAndResetMonthlyScore()
     
@@ -106,7 +105,7 @@ function initializeApp() {
         if (availableLines < getCurrentLevel(getScore()).maxLines) {
             recoveryInterval = setInterval(recoverLines, 1000);
         }
-        updateUserInfo(user);
+        updateUserInfo();
     }
     
     function setScore (score){
@@ -180,7 +179,7 @@ function initializeApp() {
             lastUpdatedMonthly:localStorage.getItem('lastUpdatedMonthly'),
             availableLines: availableLines,
         };
-        updateUserInfo(user)
+        updateUserInfo()
         updateUser(user)
     
         clearTimeout(delayTimeout)
@@ -240,16 +239,18 @@ function initializeApp() {
     function getNextLevel(score) {
         return LEVELS.find(level => score < level.numberOfCodeLines) || LEVELS[LEVELS.length - 1]
     }
-    function updateUserInfo(user) {
+    function updateUserInfo() {
         const userInfoDiv = document.querySelector('.user__info');
         const score = getScore();
         const level = getCurrentLevel(score);
+        const first_name = localStorage.getItem('first_name');
+        const last_name = localStorage.getItem('last_name');
     
         userInfoDiv.innerHTML = `
             <p>Total Clicks: ${score}</p>
             <p>Current Level: ${level.name}</p>
-            <p>First Name: ${user.first_name}</p>
-            <p>Last Name: ${user.last_name}</p>
+            <p>First Name: ${first_name}</p>
+            <p>Last Name: ${last_name}</p>
         `;
     }
     
@@ -311,16 +312,5 @@ if (user) {
     tg.expand();
     tg.ready();
 } else {
-    initializeApp({
-        id: uuidv4(),
-        first_name: 'Test',
-        last_name: 'Testovich',
-        username: 'Testolio',
-        score: 0,
-        dailyScore: 0,
-        monthlyScore: 0,
-        lastUpdated: new Date().toISOString().slice('T')[0], 
-        lastUpdatedMonthly: new Date().toISOString().slice(0, 7),
-        availableLines: 0
-    });
+    console.error('User data not available');
 }

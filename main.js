@@ -1,4 +1,5 @@
 import './style.css'
+import { v4 as uuidv4 } from 'uuid';
 import galaStudent from '/galaStudent.webp'
 import galaTrainee from '/galaTrainee.webp'
 import galaJunior from '/galaJunior.webp'
@@ -7,24 +8,59 @@ import galaSenior from '/galaSenior.webp'
 import galaTeamLead from '/galaTeamLead.webp'
 import galaGoogle from '/galaGoogle.webp'
 
-function initializeApp() {
-        const navLinks = document.querySelectorAll("nav ul li a")
-        const sections = document.querySelectorAll(".section")
-      
-        navLinks.forEach(link => {
-          link.addEventListener("click", (e) => {
-            e.preventDefault();
-            const targetSection = e.target.getAttribute("data-section");
-      
-            sections.forEach(section => {
-              if (section.id === targetSection) {
-                section.classList.add("active");
-              } else {
-                section.classList.remove("active");
-              }
-            });
-          });
+const SERVER_URL = 'http://localhost:8080/api/users/'
+
+async function updateUser(user) {
+    console.log('preUpdated user:', user)
+    try {
+        const response = await fetch(`${SERVER_URL}${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
         });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        const data = await response.json();
+        console.log('updated user:', data)
+    } catch (error) {
+        console.error('Error updating user:', error)
+        return { error: 'Error updating user data' }
+    }
+}
+
+async function fetchUser(userId) {
+    try {
+        let response = await fetch(`${SERVER_URL}${userId}`)
+        if (!response.ok) {
+            throw new Error(`Request error! status: ${response.status}`);
+        }
+        let data = await response.json()
+        return data;
+    } catch (error) {
+        console.error('Error fetching user:', error)
+    }
+}
+function initializeApp() {
+    const navLinks = document.querySelectorAll("nav ul li a")
+    const sections = document.querySelectorAll(".section")
+      
+    navLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const targetSection = e.target.getAttribute("data-section");
+  
+        sections.forEach(section => {
+          if (section.id === targetSection) {
+            section.classList.add("active");
+            } else {
+            section.classList.remove("active");
+          }
+        });
+        });
+    });
     
     const images = document.querySelectorAll("img");
       images.forEach(img => {
@@ -36,12 +72,11 @@ function initializeApp() {
     const $score = document.querySelector("#score")
     const $dailyScore = document.querySelector("#daily-score")
     const $monthlyScore = document.querySelector("#monthly-score")
-    const $totalScore = document.querySelector("#total-score")
     const $progressFill = document.querySelector("#progress-fill")
     const $clicksLeft = document.querySelector("#clicks-left")
     const $availableLines = document.querySelector("#available-lines")
     
-    let availableLines = localStorage.getItem('availableLines') ? Number(localStorage.getItem('availableLines')) : 100
+    let availableLines = Number(localStorage.getItem('availableLines')) || 100
     let recoveryInterval = null
     let delayTimeout = null
     
@@ -61,7 +96,6 @@ function initializeApp() {
         setScore(getScore())
         setDailyScore(getDailyScore())
         setMonthlyScore(getMonthlyScore())
-        setTotalScore(getTotalScore())
     
         updateProgressBar()
         updateImageAndLevel()
@@ -71,7 +105,8 @@ function initializeApp() {
     
         if (availableLines < getCurrentLevel(getScore()).maxLines) {
             recoveryInterval = setInterval(recoverLines, 1000);
-          }
+        }
+        updateUserInfo(user);
     }
     
     function setScore (score){
@@ -87,10 +122,6 @@ function initializeApp() {
         localStorage.setItem('monthlyScore', score)
         $monthlyScore.textContent = score
     }
-    function setTotalScore(score) {
-        localStorage.setItem('totalScore', score)
-        $totalScore.textContent = score
-    }
     function getScore (){
         return Number( 
             localStorage && localStorage.getItem('score')) || 0
@@ -101,13 +132,9 @@ function initializeApp() {
     function getMonthlyScore() {
         return Number(localStorage.getItem('monthlyScore')) || 0
     }
-    function getTotalScore() {
-        return Number(localStorage.getItem('totalScore')) || 0
-    }
     function checkAndResetDailyScore() {
         const lastUpdatedDaily = localStorage.getItem('lastUpdated')
-        const today = new Date().toISOString().split('T')[0]
-    
+        const today = new Date().toISOString().split('T')[0];
         if (lastUpdatedDaily !== today) {
             localStorage.setItem('dailyScore', 0)
             localStorage.setItem('lastUpdated', today)
@@ -115,9 +142,8 @@ function initializeApp() {
     }
     function checkAndResetMonthlyScore() {
         const lastUpdatedMonthly = localStorage.getItem('lastUpdatedMonthly')
-        const currentMonth = new Date().toISOString().slice(0, 7)
-    
-        if (lastUpdatedMonthly !== currentMonth) {
+        const currentMonth = new Date().toISOString().split('T')[0].slice(0, 7)
+        if (lastUpdatedMonthly!==currentMonth) {
             localStorage.setItem('monthlyScore', 0)
             localStorage.setItem('lastUpdatedMonthly', currentMonth)
         }
@@ -129,20 +155,33 @@ function initializeApp() {
         const newScore = getScore() + level.xlevel
         const newDailyScore = getDailyScore() +level.xlevel
         const newMonthlyScore = getMonthlyScore() + level.xlevel
-        const newTotalScore = getTotalScore() + level.xlevel
     
         availableLines -= 1
-        localStorage.setItem('availableLines', availableLines);
+        localStorage.setItem('availableLines', String(availableLines));
     
         setScore(newScore)
         setDailyScore(newDailyScore)
         setMonthlyScore(newMonthlyScore)
-        setTotalScore(newTotalScore)
     
         updateProgressBar()
         updateImageAndLevel()
         updateClicksLeft()
         updateAvailableLines()
+
+        const user = {
+            id: localStorage.getItem('userId'),
+            first_name: localStorage.getItem('first_name'),
+            last_name: localStorage.getItem('last_name'),
+            username: localStorage.getItem('username'),
+            score: newScore,
+            dailyScore: localStorage.getItem('dailyScore'),
+            monthlyScore: localStorage.getItem('monthlyScore'),
+            lastUpdated: localStorage.getItem('lastUpdated'), 
+            lastUpdatedMonthly:localStorage.getItem('lastUpdatedMonthly'),
+            availableLines: availableLines,
+        };
+        updateUserInfo(user)
+        updateUser(user)
     
         clearTimeout(delayTimeout)
           clearInterval(recoveryInterval)
@@ -187,6 +226,7 @@ function initializeApp() {
             availableLines += 1
             localStorage.setItem('availableLines', availableLines);
             updateAvailableLines()
+            updateUser(user)
             if (availableLines > 0) {
                 $circle.classList.remove('grayscale')
               }
@@ -200,6 +240,19 @@ function initializeApp() {
     function getNextLevel(score) {
         return LEVELS.find(level => score < level.numberOfCodeLines) || LEVELS[LEVELS.length - 1]
     }
+    function updateUserInfo(user) {
+        const userInfoDiv = document.querySelector('.user__info');
+        const score = getScore();
+        const level = getCurrentLevel(score);
+    
+        userInfoDiv.innerHTML = `
+            <p>Total Clicks: ${score}</p>
+            <p>Current Level: ${level.name}</p>
+            <p>First Name: ${user.first_name}</p>
+            <p>Last Name: ${user.last_name}</p>
+        `;
+    }
+    
     $circle.addEventListener('click', (event) => {
         const rect = $circle.getBoundingClientRect()
     
@@ -233,19 +286,41 @@ function initializeApp() {
             plusOne.remove()
          },2000)
     } ) 
-    
     start()
 }
 
-if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
-    const userInfoDiv = document.querySelector(".user__info");
-    if (userInfoDiv) {
-    userInfoDiv.innerHTML = `<p>First Name: ${user ? user.first_name : ''}</p> <p>Last Name: ${user ? user.last_name : ''}</p> <p>Level: ${user ? user.username : ''}</p> <p>User ID: ${user ? user.id : ''}</p>`
-    }
-    initializeApp()
+const tg = window.Telegram.WebApp;
+const user = tg.initDataUnsafe.user;
+if (user) {
+    fetchUser(user.id).then((data) => {
+        if (data) {
+            console.log('User data:', data);
+            localStorage.setItem('userId', data.id);
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('first_name', data.first_name);
+            localStorage.setItem('last_name', data.last_name);
+            localStorage.setItem('score', data.score);
+            localStorage.setItem('dailyScore', data.dailyScore);
+            localStorage.setItem('monthlyScore', data.monthlyScore);
+            localStorage.setItem('lastUpdated', data.lastUpdated);
+            localStorage.setItem('lastUpdatedMonthly', data.lastUpdatedMonthly);
+            localStorage.setItem('availableLines', String(data.availableLines));
+            initializeApp();
+        } 
+    });
+    tg.expand();
     tg.ready();
 } else {
-    initializeApp()
+    initializeApp({
+        id: uuidv4(),
+        first_name: 'Test',
+        last_name: 'Testovich',
+        username: 'Testolio',
+        score: 0,
+        dailyScore: 0,
+        monthlyScore: 0,
+        lastUpdated: new Date().toISOString().slice('T')[0], 
+        lastUpdatedMonthly: new Date().toISOString().slice(0, 7),
+        availableLines: 0
+    });
 }

@@ -6,11 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <title>Gala Clicker</title>
-    <script type="module" crossorigin src="/gala-clicker/assets/index-B_1tfUlw.js"></script>
-    <link rel="stylesheet" crossorigin href="/gala-clicker/assets/index-CFUvlbEQ.css">
+    <script type="module" crossorigin src="/gala-clicker/assets/index-CIegZcFo.js"></script>
+    <link rel="stylesheet" crossorigin href="/gala-clicker/assets/index-DPZZh4CN.css">
   </head>
   <body>
     <main>
+      <section id="loading-screen" class="loading__section" >
+        <div class="loading__box">
+          <img src="/gala-clicker/loading.webp" width="280" height="280" alt="loading image" class="circle__img loading__img">
+        </div>
+      </section>
       <section class="head section active" id="game" >
         <div class="head__score-sections">
           <div class="head__score-section">
@@ -64,7 +69,7 @@
       <section id="leaderboard" class="leaderboard section">LEADERBOARD </section> 
     </main>
     <footer>
-      <nav>
+      <nav disabled>
         <ul>
           <li><a href="#" data-section="game">Game</a></li>
           <li><a href="#" data-section="rules">Rules</a></li>

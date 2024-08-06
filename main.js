@@ -7,10 +7,9 @@ import galaSenior from '/galaSenior.webp'
 import galaTeamLead from '/galaTeamLead.webp'
 import galaGoogle from '/galaGoogle.webp'
 
-const SERVER_URL = 'http://localhost:8080/api/users/'
+const SERVER_URL = 'https://lisovyi.eu/api/users/'
 
 async function updateUser(user) {
-    console.log('preUpdated user:', user)
     try {
         const response = await fetch(`${SERVER_URL}${user.id}`, {
             method: 'PUT',
@@ -22,8 +21,6 @@ async function updateUser(user) {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
         }
-        const data = await response.json();
-        console.log('updated user:', data)
     } catch (error) {
         console.error('Error updating user:', error)
         return { error: 'Error updating user data' }
@@ -33,6 +30,18 @@ async function updateUser(user) {
 async function fetchUser(userId) {
     try {
         let response = await fetch(`${SERVER_URL}${userId}`)
+        if (!response.ok) {
+            throw new Error(`Request error! status: ${response.status}`);
+        }
+        let data = await response.json()
+        return data;
+    } catch (error) {
+        console.error('Error fetching user:', error)
+    }
+}
+async function fetchAllUsers() {
+    try {
+        let response = await fetch(`${SERVER_URL}`)
         if (!response.ok) {
             throw new Error(`Request error! status: ${response.status}`);
         }
@@ -74,6 +83,8 @@ function initializeApp() {
     const $progressFill = document.querySelector("#progress-fill")
     const $clicksLeft = document.querySelector("#clicks-left")
     const $availableLines = document.querySelector("#available-lines")
+    const $leaderboard = document.querySelector("#leaderboard")
+    const $loading=document.querySelector("#loading-screen")
     
     let availableLines = Number(localStorage.getItem('availableLines')) || 100
     let recoveryInterval = null
@@ -106,6 +117,10 @@ function initializeApp() {
             recoveryInterval = setInterval(recoverLines, 1000);
         }
         updateUserInfo();
+        fetchAllUsers().then(users => displayLeaderboard(users));
+
+        $loading.style.display = 'none';
+        document.getElementById('game').style.display = 'flex';
     }
     
     function setScore (score){
@@ -253,7 +268,18 @@ function initializeApp() {
             <p>Last Name: ${last_name}</p>
         `;
     }
-    
+
+    function displayLeaderboard(users) {
+        console.log('Leaderboard:', users);
+        const sortedUsers = users.sort((a, b) => b.score - a.score);
+        const leaderboardHTML = sortedUsers.map(user => `
+            <div class="leaderboard-item">
+                <p>${user.username}: ${user.score}</p>
+            </div>
+        `).join('');
+        $leaderboard.innerHTML = leaderboardHTML;
+    }
+    $leaderboard.addEventListener('click', () => { fetchAllUsers().then(users => displayLeaderboard(users)) });
     $circle.addEventListener('click', (event) => {
         const rect = $circle.getBoundingClientRect()
     

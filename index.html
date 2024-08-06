@@ -9,7 +9,12 @@
   </head>
   <body>
     <main>
-      <section class="head section active" id="game" >
+      <section id="loading-screen" class="loading__section active" >
+        <div class="loading__box">
+          <img src="/loading.webp" width="280" height="280" alt="loading image" class="circle__img loading__img">
+        </div>
+      </section>
+      <section class="head section" id="game" >
         <div class="head__score-sections">
           <div class="head__score-section">
             <img class="score__img" src="/dailyScore.webp" alt="score image">
@@ -56,18 +61,31 @@
           </div>        
         </div>
         <div id="info" class="user__info">
-
         </div>
       </section>
-      <section id="leaderboard" class="leaderboard section">LEADERBOARD </section> 
+      <section id="leaderboard" class="leaderboard section">
+        <h2>leaderboard</h2>
+        <table class="leaderboard__table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Total Score</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            
+          </tbody>
+          </table>
+      </section> 
     </main>
-    <footer>
+    <footer id="navigation" style="display: none;">
       <nav>
         <ul>
           <li><a href="#" data-section="game">Game</a></li>
           <li><a href="#" data-section="rules">Rules</a></li>
           <li><a href="#" data-section="user">User</a></li>
-          <li><a href="#" data-section="leaderboard">Leaderboard</a></li>
+          <li><a href="#" data-section="leaderboard" id="leaderboardLink">Leaderboard</a></li>
         </ul>
       </nav>
     </footer>

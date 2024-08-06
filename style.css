@@ -3,7 +3,7 @@ html, body {
   flex-direction: column;
   font-family: "Helvetica Neue";
   margin-inline: auto;
-  height: 100vh;
+  height: 98vh;
   padding: 0;
   max-width: 768px;
   display: flex;
@@ -11,10 +11,14 @@ html, body {
   align-items: center;
   background-color: rgb(35, 32, 32);
   user-select: none;
+  cursor: default;
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+  -webkit-touch-action: pan-x pan-y;
 }
 main {
   width: 99%;
-  min-height: 500px;
+  min-height: 470px;
   max-height: 80vh;
   background-color: #151111;
   border-top: #F7B84B solid 2px;
@@ -23,7 +27,7 @@ main {
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   padding: 20px;
   position: relative;
@@ -67,7 +71,7 @@ footer ul li a {
 }
 .head {
   width: 280px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 5px;
   justify-content: center;
@@ -158,6 +162,9 @@ footer ul li a {
   align-items: center;
   justify-content: center;
 }
+.circle:hover{
+  cursor: pointer;
+}
 .circle__img {
   width: 280px;
   border-radius: 50%;
@@ -169,6 +176,7 @@ footer ul li a {
   transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
 }
 .circle__img.grayscale {
+  cursor: no-drop;
   filter: grayscale(100%);
   pointer-events: none;
 }
@@ -235,6 +243,7 @@ footer ul li a {
   line-height: 1.5;
 }
 .user {
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -257,17 +266,69 @@ footer ul li a {
   width: 100%;
   color: #F7B84B;
 }
-.footer {
-
-}
 .section {
   display: none;
 }
-
 .section.active {
   width: 280px;
   display: flex;
   color: #F7B84B;
+}
+.loading__section {
+  align-self: center;
+  padding-top: 50%;
+}
+.loading__img {
+  background: linear-gradient(to right, #151111, #F7B84B);
+  background-size: 200% 100%;
+  animation: loading 2s infinite linear;
+}
+.leaderboard {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #F7B84B;
+}
+.leaderboard h2 {
+  font-size: 24px;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  border: 1px solid;
+  padding: 8px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table th {
+  font-weight: bold;
+}
+
+.leaderboard__table {
+  margin: 0 auto;
+  width: 80%; /* Adjust as needed */
+}
+.leaderboard__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+@keyframes loading {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 @keyframes move-up {

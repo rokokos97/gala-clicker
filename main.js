@@ -8,8 +8,8 @@ import galaTeamLead from '/galaTeamLead.webp'
 import galaGoogle from '/galaGoogle.webp'
 
 const SERVER_URL = 'https://lisovyi.eu/api/users/'
-
 async function updateUser(user) {
+    console.log('user', user)
     try {
         const response = await fetch(`${SERVER_URL}${user.id}`, {
             method: 'PUT',
@@ -85,6 +85,7 @@ function initializeApp() {
     const $availableLines = document.querySelector("#available-lines")
     const $leaderboard = document.querySelector("#leaderboard")
     const $loading=document.querySelector("#loading-screen")
+    const $navigation = document.querySelector("#navigation")
     
     let availableLines = Number(localStorage.getItem('availableLines')) || 100
     let recoveryInterval = null
@@ -92,7 +93,7 @@ function initializeApp() {
     
     const LEVELS = [
         { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: galaStudent, xlevel: 1, maxLines: 100 },
-        { id: 2, name: "Trainee", numberOfCodeLines: 10000, imgUrl: galaTrainee, xlevel: 1, maxLines: 100 },
+        { id: 2, name: "Trainee", numberOfCodeLines: 3000, imgUrl: galaTrainee, xlevel: 1, maxLines: 200 },
         { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: galaJunior, xlevel: 5, maxLines: 200 },
         { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: galaMiddle, xlevel: 10, maxLines: 400 },
         { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: galaSenior, xlevel: 15, maxLines: 600 },
@@ -120,7 +121,8 @@ function initializeApp() {
         fetchAllUsers().then(users => displayLeaderboard(users));
 
         $loading.style.display = 'none';
-        document.getElementById('game').style.display = 'flex';
+        document.getElementById('game').classList.add("active");
+        $navigation.style.display = 'block';
     }
     
     function setScore (score){
@@ -201,7 +203,7 @@ function initializeApp() {
           clearInterval(recoveryInterval)
     
           delayTimeout = setTimeout(() => {
-            recoveryInterval = setInterval(recoverLines, 1000)
+            recoveryInterval = setInterval(recoverLines, 500)
           }, 5000)
         } else {
             $circle.classList.add('grayscale')
@@ -270,16 +272,17 @@ function initializeApp() {
     }
 
     function displayLeaderboard(users) {
-        console.log('Leaderboard:', users);
         const sortedUsers = users.sort((a, b) => b.score - a.score);
-        const leaderboardHTML = sortedUsers.map(user => `
-            <div class="leaderboard-item">
-                <p>${user.username}: ${user.score}</p>
-            </div>
+        const tbodyHTML = sortedUsers.map((user, index) => `
+            <tr>
+                <td>${index+1}</td>
+                <td>${user.username}</td>
+                <td>${user.score}</td>
+            </tr>
         `).join('');
-        $leaderboard.innerHTML = leaderboardHTML;
+        document.querySelector('#tbody').innerHTML = tbodyHTML
     }
-    $leaderboard.addEventListener('click', () => { fetchAllUsers().then(users => displayLeaderboard(users)) });
+    document.querySelector('#leaderboardLink').addEventListener('click', () => { fetchAllUsers().then(users => displayLeaderboard(users)) });
     $circle.addEventListener('click', (event) => {
         const rect = $circle.getBoundingClientRect()
     
@@ -338,5 +341,16 @@ if (user) {
     tg.expand();
     tg.ready();
 } else {
+    localStorage.setItem('userId', '007');
+            localStorage.setItem('username', 'test');
+            localStorage.setItem('first_name', 'test');
+            localStorage.setItem('last_name', 'test');
+            localStorage.setItem('score', 2990);
+            localStorage.setItem('dailyScore', 0);
+            localStorage.setItem('monthlyScore', 0);
+            localStorage.setItem('lastUpdated', '');
+            localStorage.setItem('lastUpdatedMonthly', '');
+            localStorage.setItem('availableLines', '100');
+            initializeApp();
     console.error('User data not available');
 }

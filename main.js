@@ -83,7 +83,6 @@ function initializeApp() {
     const $progressFill = document.querySelector("#progress-fill")
     const $clicksLeft = document.querySelector("#clicks-left")
     const $availableLines = document.querySelector("#available-lines")
-    const $leaderboard = document.querySelector("#leaderboard")
     const $loading=document.querySelector("#loading-screen")
     const $navigation = document.querySelector("#navigation")
     

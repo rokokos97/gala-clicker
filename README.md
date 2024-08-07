@@ -20,7 +20,7 @@
 - <span class="poppins">Leaderboard: Compete with other players and see where you rank on the global leaderboard based on your total score.</span>
 - <span class="poppins">User Profile: View your user profile, including your avatar, total clicks, and current level</span>
 - <span class="poppins">Mobile-Friendly: Optimized for use as a Telegram mini app, ensuring smooth performance and a seamless user experience on mobile devices</span>
-- <span class="poppins">CAutomatic Data Sync: User data is automatically synchronized with the server to keep your progress up-to-da</span>
+- <span class="poppins">CAutomatic Data Sync: User data is automatically synchronized with the server to keep your progress</span>
 
 
 ## <span class="poppins">Tech Stack</span>

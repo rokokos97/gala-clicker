@@ -1,7 +1,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>.poppins {font-family: 'Poppins', sans-serif;}</style>
+<<<<<<< HEAD
 
+=======
+<style>.center {text-align: center;}</style>
+
+<!-- # <span class="poppins">GALA CLICKER</span> -->
+>>>>>>> 84ab98524311befab241ad9fc7c7ec11d8ed89b8
 <img class="center" src="https://rokokos97.github.io/gala-clicker/gala-clicker-cover.webp" width="220">
 
 <span class="poppins">**Gala Clicker** is a Telegram mini app where you help your virtual programmer progress and write new lines of code. Your task is to click on the programmer's image to earn points and level up your character.</span>

@@ -342,10 +342,10 @@ if (user) {
     tg.ready();
 } else {
     localStorage.setItem('userId', '007');
-            localStorage.setItem('username', 'test');
-            localStorage.setItem('first_name', 'test');
-            localStorage.setItem('last_name', 'test');
-            localStorage.setItem('score', 2990);
+            localStorage.setItem('username', 'Test');
+            localStorage.setItem('first_name', 'Test');
+            localStorage.setItem('last_name', 'Testovich');
+            localStorage.setItem('score', 0);
             localStorage.setItem('dailyScore', 0);
             localStorage.setItem('monthlyScore', 0);
             localStorage.setItem('lastUpdated', '');

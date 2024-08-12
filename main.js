@@ -1,22 +1,16 @@
 import './style.css'
-import galaStudent from '/galaStudent.webp'
-import galaTrainee from '/galaTrainee.webp'
-import galaJunior from '/galaJunior.webp'
-import galaMiddle from '/galaMiddle.webp'
-import galaSenior from '/galaSenior.webp'
-import galaTeamLead from '/galaTeamLead.webp'
-import galaGoogle from '/galaGoogle.webp'
 
-const SERVER_URL = 'https://lisovyi.eu/api/users/'
-async function updateUser(user) {
-    console.log('user', user)
+const SERVER_USERS_URL = 'https://lisovyi.eu/api/users/'
+async function updateUser(updatedUser) {
+    console.log('Updated USER', updatedUser)
+    console.log('Updated USER ID', updatedUser.external_id_telegram)
     try {
-        const response = await fetch(`${SERVER_URL}${user.id}`, {
+        const response = await fetch(`${SERVER_USERS_URL}${updatedUser.external_id_telegram}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify(updatedUser)
         });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`)
@@ -26,10 +20,9 @@ async function updateUser(user) {
         return { error: 'Error updating user data' }
     }
 }
-
 async function fetchUser(userId) {
     try {
-        let response = await fetch(`${SERVER_URL}${userId}`)
+        let response = await fetch(`${SERVER_USERS_URL}${userId}`)
         if (!response.ok) {
             throw new Error(`Request error! status: ${response.status}`);
         }
@@ -41,7 +34,7 @@ async function fetchUser(userId) {
 }
 async function fetchAllUsers() {
     try {
-        let response = await fetch(`${SERVER_URL}`)
+        let response = await fetch(`${SERVER_USERS_URL}`)
         if (!response.ok) {
             throw new Error(`Request error! status: ${response.status}`);
         }
@@ -90,14 +83,16 @@ function initializeApp() {
     let recoveryInterval = null
     let delayTimeout = null
     
+    // const LEVELS = fetchLevelsSheet();
+
     const LEVELS = [
-        { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: galaStudent, xlevel: 1, maxLines: 100 },
-        { id: 2, name: "Trainee", numberOfCodeLines: 3000, imgUrl: galaTrainee, xlevel: 1, maxLines: 200 },
-        { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: galaJunior, xlevel: 5, maxLines: 200 },
-        { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: galaMiddle, xlevel: 10, maxLines: 400 },
-        { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: galaSenior, xlevel: 15, maxLines: 600 },
-        { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: galaTeamLead, xlevel: 25, maxLines: 800 },
-        { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: galaGoogle, xlevel: 50, maxLines: 999 }
+        { id: 1, name: "Student", numberOfCodeLines: 0, imgUrl: './galaStudent.webp', xlevel: 1, maxLines: 100 },
+        { id: 2, name: "Trainee", numberOfCodeLines: 3000, imgUrl: './galaTrainee.webp', xlevel: 1, maxLines: 200 },
+        { id: 3, name: "Junior", numberOfCodeLines: 100000, imgUrl: './galaJunior.webp', xlevel: 5, maxLines: 200 },
+        { id: 4, name: "Middle", numberOfCodeLines: 1000000, imgUrl: './galaMiddle.webp', xlevel: 10, maxLines: 400 },
+        { id: 5, name: "Senior", numberOfCodeLines: 10000000, imgUrl: './galaSenior.webp', xlevel: 15, maxLines: 600 },
+        { id: 6, name: "Team Lead", numberOfCodeLines: 100000000, imgUrl: './galaTeamLead.webp', xlevel: 25, maxLines: 800 },
+        { id: 7, name: "Google", numberOfCodeLines: 1000000000, imgUrl: './galaGoogle.webp', xlevel: 50, maxLines: 999 }
     ]
     function start (){
         checkAndResetDailyScore()
@@ -183,8 +178,8 @@ function initializeApp() {
         updateClicksLeft()
         updateAvailableLines()
 
-        const user = {
-            id: localStorage.getItem('userId'),
+        const userBeforeUpdate = {
+            external_id_telegram: localStorage.getItem('external_id_telegram'),
             first_name: localStorage.getItem('first_name'),
             last_name: localStorage.getItem('last_name'),
             username: localStorage.getItem('username'),
@@ -196,7 +191,8 @@ function initializeApp() {
             availableLines: availableLines,
         };
         updateUserInfo()
-        updateUser(user)
+        console.log('userBeforeUpdate', userBeforeUpdate);
+        updateUser(userBeforeUpdate)
     
         clearTimeout(delayTimeout)
           clearInterval(recoveryInterval)
@@ -241,7 +237,7 @@ function initializeApp() {
             availableLines += 1
             localStorage.setItem('availableLines', availableLines);
             updateAvailableLines()
-            updateUser(user)
+            // updateUser(telegrammUser)
             if (availableLines > 0) {
                 $circle.classList.remove('grayscale')
               }
@@ -319,21 +315,21 @@ function initializeApp() {
 }
 
 const tg = window.Telegram.WebApp;
-const user = tg.initDataUnsafe.user;
-if (user) {
-    fetchUser(user.id).then((data) => {
-        if (data) {
-            console.log('User data:', data);
-            localStorage.setItem('userId', data.id);
-            localStorage.setItem('username', data.username);
-            localStorage.setItem('first_name', data.first_name);
-            localStorage.setItem('last_name', data.last_name);
-            localStorage.setItem('score', data.score);
-            localStorage.setItem('dailyScore', data.dailyScore);
-            localStorage.setItem('monthlyScore', data.monthlyScore);
-            localStorage.setItem('lastUpdated', data.lastUpdated);
-            localStorage.setItem('lastUpdatedMonthly', data.lastUpdatedMonthly);
-            localStorage.setItem('availableLines', String(data.availableLines));
+const telegrammUser = tg.initDataUnsafe.user;
+if (telegrammUser) {
+    fetchUser(telegrammUser.id).then((dbUser) => {
+        if (dbUser) {
+            console.log('DB user:', dbUser);
+            localStorage.setItem('external_id_telegram', dbUser.external_id_telegram);
+            localStorage.setItem('username', dbUser.username);
+            localStorage.setItem('first_name', dbUser.first_name);
+            localStorage.setItem('last_name', dbUser.last_name);
+            localStorage.setItem('score', dbUser.score);
+            localStorage.setItem('dailyScore', dbUser.dailyScore);
+            localStorage.setItem('monthlyScore', dbUser.monthlyScore);
+            localStorage.setItem('lastUpdated', dbUser.lastUpdated);
+            localStorage.setItem('lastUpdatedMonthly', dbUser.lastUpdatedMonthly);
+            localStorage.setItem('availableLines', String(dbUser.availableLines));
             initializeApp();
         } 
     });
@@ -341,15 +337,15 @@ if (user) {
     tg.ready();
 } else {
     localStorage.setItem('userId', '007');
-            localStorage.setItem('username', 'Test');
-            localStorage.setItem('first_name', 'Test');
-            localStorage.setItem('last_name', 'Testovich');
-            localStorage.setItem('score', 0);
-            localStorage.setItem('dailyScore', 0);
-            localStorage.setItem('monthlyScore', 0);
-            localStorage.setItem('lastUpdated', '');
-            localStorage.setItem('lastUpdatedMonthly', '');
-            localStorage.setItem('availableLines', '100');
-            initializeApp();
+    localStorage.setItem('username', 'Test');
+    localStorage.setItem('first_name', 'Test');
+    localStorage.setItem('last_name', 'Testovich');
+    localStorage.setItem('score', 0);
+    localStorage.setItem('dailyScore', 0);
+    localStorage.setItem('monthlyScore', 0);
+    localStorage.setItem('lastUpdated', '');
+    localStorage.setItem('lastUpdatedMonthly', '');
+    localStorage.setItem('availableLines', '100');
+    initializeApp();
     console.error('User data not available');
 }

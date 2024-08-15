@@ -1,6 +1,7 @@
 import './style.css'
-
+    
 const SERVER_USERS_URL = 'https://lisovyi.eu/api/users/'
+const SERVER_LEVELS_URL = 'https://lisovyi.eu/api/levels/'
 async function updateUser(updatedUser) {
     console.log('Updated USER', updatedUser)
     console.log('Updated USER ID', updatedUser.external_id_telegram)
@@ -35,6 +36,18 @@ async function fetchUser(userId) {
 async function fetchAllUsers() {
     try {
         let response = await fetch(`${SERVER_USERS_URL}`)
+        if (!response.ok) {
+            throw new Error(`Request error! status: ${response.status}`);
+        }
+        let data = await response.json()
+        return data;
+    } catch (error) {
+        console.error('Error fetching user:', error)
+    }
+}
+async function fetchLevels() {
+    try {
+        let response = await fetch(`${SERVER_LEVELS_URL}`)
         if (!response.ok) {
             throw new Error(`Request error! status: ${response.status}`);
         }
@@ -112,6 +125,7 @@ function initializeApp() {
             recoveryInterval = setInterval(recoverLines, 1000);
         }
         updateUserInfo();
+        fetchLevels();
         fetchAllUsers().then(users => displayLeaderboard(users));
 
         $loading.style.display = 'none';

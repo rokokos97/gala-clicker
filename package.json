@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@dicebear/collection": "^9.2.1",
-    "@dicebear/core": "^9.2.1"
+    "@dicebear/core": "^9.2.1",
+    "dotenv": "^16.4.5"
   }
 }
